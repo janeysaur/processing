@@ -45,7 +45,7 @@ Sketch is made up of 4 parts:
     - this was done by splitting the sketch into a grid of 10px * 10px squares
     - on every draw(), we go through the points of every detected blob; find the square that it falls into; and increment the counter for that grid square
     - once the counter for a grid square has reached a pre-defined 'spawnThreshold', we spawn a random walker from that grid square (and sometimes a growing orb)
-    - the walker's movement is akin to Brownian Motion and it is given an initial heading (away from the center of the blob)
+    - the walker's movement is akin to Brownian Motion (inspiration from Pedro Cruz's brown3 sketch - http://pmcruz.com/visual-experiments/revisiting-brownian-motion) and it is given an initial heading (away from the center of the blob)
     - on every draw(), we also decrement the counter on each of the grid points
     - once the counter has fallen below a 'dieThreshold', we stop any walkers and orbs that have been spawned from that grid point
   * on each draw(), the current walkers and orbs are drawn into the PGraphics image 

@@ -1,0 +1,22 @@
+Flaneurs Trace Floor
+
+Keys:
+- Press space (' ') to save a new background image at any time
+- Press 'b' to toggle blobs
+- Press '+' and '-' to adjust Kinect tilt angle (0 - 30 degrees)
+- Press UP and DOWN arrow keys to adjust threshold
+- Use mouseclicks to set the destination for the attractors 
+
+How it works: 
+ On every draw() ... 
+  * Kinect depth camera image is grabbed using Daniel Shiffman's OpenKinect Processing library
+(http://www.shiffman.net/p5/kinect/) 
+  * perform simple background subtraction using frame differencing to identify moving objects from a saved background image
+  * find "blobs" in difference image using the OpenCV Processing library (http://ubaa.net/shared/processing/opencv/)
+  * go through all the blobs and for each blob that is detected, add a new 'attractor' (this is only done approx. every 1 second)
+  * the attractors follow an algorithm modified from renaud's "Snakes are hunting You" sketch at http://www.openprocessing.org/visuals/?visualID=1252   
+  * the attractors are given a starting position ~ 60% of the distance from the destination point to the center of the bounding box of the current blob
+  * draw and update any attractors
+  * if 'showBlobs' flag is true, draw the blobs 
+  
+N.B. We were advised that as the demonstration would be for a small controlled environment, we should be able to manually calibrate the Kinect and Projector image on-site. So we opted not to implement any projection mapping in the Processing sketch itself. 

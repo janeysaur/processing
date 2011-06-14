@@ -1,0 +1,61 @@
+Flaneurs Trace Screen
+
+Keys:
+- Press space (' ') to start intro
+- Press 'b' to save a new background image
+- Press 'c' to clear foreground image
+- Press '+' and '-' to adjust Kinect tilt angle (0 - 30 degrees)
+- Press UP and DOWN arrow keys to adjust vertical crop position of Kinect image
+- Press 'o' to toggle silhouette outlines 
+
+Timeline: 
+- Sketch will start with a clean black background 
+- Press space to start intro 
+- When intro finishes (fade finishes), main sketch will start and interaction can begin
+
+
+Sketch is made up of 4 parts: 
+1. Intro 
+2. Background Layer
+3. Mask Layer
+4. Foreground Layer
+
+1. Intro 
+  * Consists of a scrolling text intro "Presenting... A Flaneurs Trace"
+  * "A Flaneurs Trace" stops and displays on the screen for 3 seconds before fading away
+  * speed of scroll, position, font size etc is hard-coded for this sketch size
+
+2. Background Layer
+  * these are the curving lines that appear to fill the silhouette
+  * algorithm for drawing lines is based on Felix Turner's Perlin Noise Field  (airtightinteractive.com)
+  * curving lines are drawn into an independent 'backgroundImage' PGraphics object that is kept in memory and updated with every draw()
+  
+3. Mask Layer 
+  * this part determines the 'silhouettes' that we see in the sketch
+  * Kinect depth camera image is grabbed using Daniel Shiffman's OpenKinect Processing library
+(http://www.shiffman.net/p5/kinect/) 
+  * we do some cropping and scaling here as the size of the Kinect depth image is different to the size of our display window
+  * perform simple background subtraction using frame differencing to identify moving objects from a saved background image
+  * find "blobs" in difference image using the OpenCV Processing library (http://ubaa.net/shared/processing/opencv/)
+  * blobs are drawn into a 'maskImage' PGraphics object (updated on every draw()) as white filled shapes on a black background
+  
+4. Foreground Layer
+  * foregroundImage is also a PGraphics object updated on every draw()
+  * for this interaction, we didn't really need to 'track' blobs over time but rather presence over time; 
+    - this was done by splitting the sketch into a grid of 10px * 10px squares
+    - on every draw(), we go through the points of every detected blob; find the square that it falls into; and increment the counter for that grid square
+    - once the counter for a grid square has reached a pre-defined 'spawnThreshold', we spawn a random walker from that grid square (and sometimes a growing orb)
+    - the walker's movement is akin to Brownian Motion and it is given an initial heading (away from the center of the blob)
+    - on every draw(), we also decrement the counter on each of the grid points
+    - once the counter has fallen below a 'dieThreshold', we stop any walkers and orbs that have been spawned from that grid point
+  * on each draw(), the current walkers and orbs are drawn into the PGraphics image 
+  * to keep silhouettes 'clean', the blobs from the mask layer (see above) are then drawn into the foregroundImage as black filled shapes but with a low alpha - this has the effect that if a person stands in the same spot for a while, the area beneath their 'blob' in the foregroundImage will become blacked out. 
+  
+5. Putting it all together
+  * On every draw(), the mask, background and foreground layers are updated 
+  * To update the display, we go through every pixel of the mask image: 
+    - if the pixel is white (we're inside a blob) - draw the pixel from the background layer
+    - if the pixel is black (no blob) - draw the pixel from the foreground layer
+  * If the 'drawOutlines' flag is true, draw white outlines around each blob detected (see above '3. Mask Layer')
+  
+  

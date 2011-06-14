@@ -26,7 +26,7 @@ boolean startIntro = false;
 
 void draw() {
   smooth();  
-  updateMask();
+//  updateMask();
   if (!intro.done && startIntro) {
     intro.draw();
     return;

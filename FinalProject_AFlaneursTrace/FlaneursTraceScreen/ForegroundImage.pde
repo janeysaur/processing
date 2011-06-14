@@ -275,7 +275,7 @@ class BrownianPoint {
     }
     float s = map(distance, 0, diagonalDistance, 200, 255);
     float b = 204;
-    pg.stroke(h, s, b, 120);
+    pg.stroke(h, s, b);
     pg.line(pos.x, pos.y, newPos.x, newPos.y);
     pos.set(newPos);
   }
